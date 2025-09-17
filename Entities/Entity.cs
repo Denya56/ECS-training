@@ -3,6 +3,7 @@
     internal sealed class Entity
     {
         public int Id { get; }
+        public object ComponentManager { get; internal set; }
 
         internal Entity(int id)
         {

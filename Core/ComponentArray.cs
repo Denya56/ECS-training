@@ -11,6 +11,13 @@ namespace ESC_training.Core
         private Dictionary<int, int> _indexToEntity;
         private int _arrayIndex;
 
+        public ComponentArray()
+        {
+            _entityToIndex = new Dictionary<int, int>();
+            _indexToEntity = new Dictionary<int, int>();
+            _arrayIndex = 0;
+        }
+
         public void InsertData(Entity entity, T component)
         {
             if (_entityToIndex.ContainsKey(entity.Id))
@@ -63,14 +70,14 @@ namespace ESC_training.Core
             // decrement to match the packed array new size
             --_arrayIndex;
         }
-        public T GetData(Entity entity)
+        public ref T GetData(Entity entity)
         {
             if (!_entityToIndex.ContainsKey(entity.Id))
             {
                 throw new KeyNotFoundException(
-                    $"Attempting to remove non-existent component of type {typeof(T)} from Entity {entity.Id}.");
+                    $"Attempting to get the non-existent component of type {typeof(T)} from Entity {entity.Id}.");
             }
-            return _componentArray[_entityToIndex[entity.Id]];
+            return ref _componentArray[_entityToIndex[entity.Id]];
         }
 
         public void EntityDestroyed(Entity entity)
