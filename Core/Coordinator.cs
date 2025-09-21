@@ -60,7 +60,7 @@ namespace ESC_training.Core
         {
             return _componentManager.GetComponentType<T>();
         }
-
+            
         // System methods
         public T RegisterSystem<T>() where T : Systems.System, new()
         {

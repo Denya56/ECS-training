@@ -4,7 +4,6 @@
     internal struct Signature
     {
         private byte signature;
-
         public void AddComponent(int index) => signature |= (byte)(1 << index);
         public void RemoveComponent(int index) => signature &= (byte)~(1 << index);
         public void Reset() => signature = 0;

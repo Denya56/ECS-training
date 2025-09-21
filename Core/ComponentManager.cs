@@ -1,4 +1,5 @@
 ﻿using ESC_training.Entities;
+using static ESC_training.Config;
 
 namespace ESC_training.Core
 {
@@ -28,6 +29,9 @@ namespace ESC_training.Core
         public void RegisterComponent<T>()
         {
             Type componentType = typeof(T);
+
+            if (_nextComponentType >= MAX_COMPONENTS)
+                throw new InvalidOperationException($"Cannot register more than {MAX_COMPONENTS} components.");
 
             if (_componentTypes.ContainsKey(componentType))
             {

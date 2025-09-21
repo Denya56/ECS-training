@@ -49,25 +49,25 @@ catch (Exception ex)
 {
     Console.WriteLine($"Accessing destroyed component throws: {ex.Message}");
 }*/
-
-
 var coordinator = new Coordinator();
 
+// Register components
 coordinator.RegisterComponent<Gravity>();
 coordinator.RegisterComponent<RigidBody>();
 coordinator.RegisterComponent<Transform>();
 
+// Register system
 var physicsSystem = coordinator.RegisterSystem<PhysicsSystem>();
 physicsSystem.coordinator = coordinator;
 
+// Set system signature
 var signature = new Signature();
 signature.AddComponent(coordinator.GetComponentType<Gravity>());
 signature.AddComponent(coordinator.GetComponentType<RigidBody>());
 signature.AddComponent(coordinator.GetComponentType<Transform>());
-
 coordinator.SetSystemSignature<PhysicsSystem>(signature);
 
-
+// Create entities
 var entities = new List<Entity>(MAX_ENTITIES);
 var rand = new Random();
 
@@ -75,31 +75,33 @@ for (int i = 0; i < MAX_ENTITIES; i++)
 {
     var entity = coordinator.CreateEntity();
 
+    // Add Gravity
     coordinator.AddComponent(entity, new Gravity
     {
-        Force = new Vector3(0.0f, (float)(-rand.NextDouble() * 9.0 - 1.0), 0.0f)
+        Force = new Vector3(0f, -10f, 0f)
     });
 
+    // Add RigidBody
     coordinator.AddComponent(entity, new RigidBody
     {
         Velocity = Vector3.Zero,
         Acceleration = Vector3.Zero
     });
 
-    float positionX = (float)(rand.NextDouble() * 200.0 - 100.0);
-    float positionY = (float)(rand.NextDouble() * 200.0 - 100.0);
-    float positionZ = (float)(rand.NextDouble() * 200.0 - 100.0);
-
-    float rotationX = (float)(rand.NextDouble() * 3.0);
-    float rotationY = (float)(rand.NextDouble() * 3.0);
-    float rotationZ = (float)(rand.NextDouble() * 3.0);
-
-    float scale = (float)(rand.NextDouble() * 2.0 + 3.0);
-
+    // Add Transform
+    float scale = (float)(3 + rand.NextDouble() * 2);
     coordinator.AddComponent(entity, new Transform
     {
-        Position = new Vector3(positionX, positionY, positionZ),
-        Rotation = new Vector3(rotationX, rotationY, rotationZ),
+        Position = new Vector3(
+            (float)(rand.NextDouble() * 200 - 100),
+            (float)(rand.NextDouble() * 200 - 100),
+            (float)(rand.NextDouble() * 200 - 100)
+        ),
+        Rotation = new Vector3(
+            (float)(rand.NextDouble() * 3),
+            (float)(rand.NextDouble() * 3),
+            (float)(rand.NextDouble() * 3)
+        ),
         Scale = new Vector3(scale, scale, scale)
     });
 
@@ -107,26 +109,31 @@ for (int i = 0; i < MAX_ENTITIES; i++)
 }
 
 // Main loop
-float dt = 0.016f; // start with ~60 FPS
-var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+//bool quit = false;
+var sw = new System.Diagnostics.Stopwatch();
+sw.Start();
+float elapsedTime = 0f;
+float simulationDuration = 10f;
 
 
-while (!quit)
+while (elapsedTime < simulationDuration)
 {
-    var startTime = stopwatch.Elapsed;
+    float dt = (float)sw.Elapsed.TotalSeconds;
+    sw.Restart();
+    elapsedTime += dt;
 
-    // Update physics
     physicsSystem.Update(dt);
 
-    // Simulate rendering time (optional)
-    // Thread.Sleep(1);
+    Console.Clear();
+    Console.WriteLine($"{"Entity",-6} {"X",8} {"Y",8} {"Z",8}");
+    Console.WriteLine(new string('-', 32));
 
-    var stopTime = stopwatch.Elapsed;
-    dt = (float)(stopTime - startTime).TotalSeconds;
-
-    // For demo purposes, quit after a few iterations
-    if (stopwatch.Elapsed.TotalSeconds > 5.0)
-        quit = true;
+    // Display first 10 entities in table
+    for (int i = 0; i < Math.Min(10, MAX_ENTITIES); i++)
+    {
+        var t = coordinator.GetComponent<Transform>(entities[i]);
+        Console.WriteLine($"{i,-6} {t.Position.X,8:F2} {t.Position.Y,8:F2} {t.Position.Z,8:F2}");
+    }
+    Thread.Sleep(16);
 }
-
 Console.WriteLine("Simulation finished.");

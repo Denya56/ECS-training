@@ -1,5 +1,4 @@
 ﻿using ESC_training.Entities;
-using ESC_training.Systems;
 
 namespace ESC_training.Core
 {
@@ -35,7 +34,7 @@ namespace ESC_training.Core
                 throw new InvalidOperationException("System used before registered.");
             }
 
-            _signatures.Add(systemType, signature);
+            _signatures[systemType] = signature;
         }
         public void EntityDestroyed(Entity entity)
         {
@@ -50,7 +49,8 @@ namespace ESC_training.Core
             {
                 var type = pair.Key;
                 var system = pair.Value;
-                var systemSignature = _signatures[type];
+                if (!_signatures.TryGetValue(type, out var systemSignature))
+                    throw new InvalidOperationException($"Signature for system {type.Name} not set before updating entity {entity}.");
 
                 if (entitySignature.HasComponents(systemSignature))
                 {
