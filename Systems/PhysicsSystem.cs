@@ -1,6 +1,5 @@
 ﻿using ESC_training.Components;
 using ESC_training.Core;
-using ESC_training.Entities;
 
 
 namespace ESC_training.Systems

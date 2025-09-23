@@ -1,4 +1,4 @@
-﻿using ESC_training.Entities;
+﻿using ESC_training.Core;
 
 namespace ESC_training.Systems
 {

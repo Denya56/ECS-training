@@ -1,9 +1,8 @@
-﻿namespace ESC_training.Entities
+﻿namespace ESC_training.Core
 {
     internal sealed class Entity
     {
         public int Id { get; }
-        public object ComponentManager { get; internal set; }
 
         internal Entity(int id)
         {

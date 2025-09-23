@@ -7,6 +7,5 @@ namespace ESC_training
     {
         public const int MAX_ENTITIES = 5000;
         public const int MAX_COMPONENTS = 8;
-        public static bool quit = false;
     }
 }

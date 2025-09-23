@@ -1,4 +1,4 @@
-﻿using ESC_training.Entities;
+﻿using ESC_training.Exceptions;
 using static ESC_training.Config;
 
 namespace ESC_training.Core
@@ -21,7 +21,7 @@ namespace ESC_training.Core
 
             if (!_componentArrays.ContainsKey(componentType))
             {
-                throw new InvalidOperationException($"Component {componentType.Name} is not registered.");
+                throw new ComponentNotRegisteredException(componentType);
             }
 
             return (ComponentArray<T>)_componentArrays[componentType];
@@ -31,11 +31,11 @@ namespace ESC_training.Core
             Type componentType = typeof(T);
 
             if (_nextComponentType >= MAX_COMPONENTS)
-                throw new InvalidOperationException($"Cannot register more than {MAX_COMPONENTS} components.");
+                throw new ComponentLimitExceededException(MAX_COMPONENTS);
 
             if (_componentTypes.ContainsKey(componentType))
             {
-                throw new InvalidOperationException($"Component {componentType.Name} is already registered.");
+                throw new ComponentAlreadyRegisteredException(componentType);
             }
 
             _componentTypes.Add(componentType, _nextComponentType);
@@ -49,8 +49,7 @@ namespace ESC_training.Core
 
             if (!_componentTypes.ContainsKey(componentType))
             {
-                throw new KeyNotFoundException(
-                    $"Attempting to remove non-existent component of type {typeof(T)}.");
+                throw new ComponentNotRegisteredException(componentType);
             }
             return _componentTypes[componentType];
         }
@@ -68,8 +67,9 @@ namespace ESC_training.Core
         }
         public void EntityDestroyed(Entity entity)
         {
-            // Notify each component array that an entity has been destroyed
-            // If it has a component for that entity, it will remove it
+            // notify each component array that an entity has been destroyed
+            // if it has a component for that entity, it will remove it
+            // replace with observer later
             foreach (var pair in _componentArrays)
             {
                 var componentArray = pair.Value;

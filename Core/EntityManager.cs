@@ -1,4 +1,4 @@
-﻿using ESC_training.Entities;
+﻿using ESC_training.Exceptions;
 using static ESC_training.Config;
 
 namespace ESC_training.Core
@@ -19,13 +19,11 @@ namespace ESC_training.Core
                 AvailableEntities.Enqueue(new Entity(i));
             }
         }
-        
         public Entity CreateEntity()
         {
-            // add custom exceptions
-            if(_livingEntityCount >= MAX_ENTITIES)
+            if (_livingEntityCount >= MAX_ENTITIES)
             {
-                throw new InvalidOperationException("Too many entities in existence.");
+                throw new EntityLimitExceededException();
             }
 
             Entity newEntity = AvailableEntities.Dequeue();
@@ -35,10 +33,9 @@ namespace ESC_training.Core
 
         public void DestroyEntity(Entity entity)
         {
-            // add custom exceptions
             if (entity.Id >= MAX_ENTITIES)
             {
-                throw new ArgumentOutOfRangeException("Entity out of range.");
+                throw new EntityOutOfRangeException(entity.Id);
             }
 
             Signatures[entity.Id].Reset();
@@ -48,20 +45,18 @@ namespace ESC_training.Core
 
         public void SetSignature(Entity entity, Signature signature)
         {
-            // add custom exceptions
             if (entity.Id >= MAX_ENTITIES)
             {
-                throw new ArgumentOutOfRangeException("Entity out of range.");
+                throw new EntityOutOfRangeException(entity.Id);
             }
             Signatures[entity.Id] = signature;
         }
 
         public Signature GetSignature(Entity entity)
         {
-            // add custom exceptions
             if (entity.Id >= MAX_ENTITIES)
             {
-                throw new ArgumentOutOfRangeException("Entity out of range.");
+                throw new EntityOutOfRangeException(entity.Id);
             }
             return Signatures[entity.Id];
         }

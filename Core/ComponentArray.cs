@@ -1,4 +1,4 @@
-﻿using ESC_training.Entities;
+﻿using ESC_training.Exceptions;
 using System.Linq;
 using static ESC_training.Config;
 
@@ -22,8 +22,7 @@ namespace ESC_training.Core
         {
             if (_entityToIndex.ContainsKey(entity.Id))
             {
-                throw new InvalidOperationException(
-                    $"Component of type {typeof(T)} already exists on Entity {entity.Id}.");
+                throw new ComponentAlreadyExistsException(typeof(T), entity.Id);
             }
 
             // get the next free spot in the packed array (the "end")
@@ -42,8 +41,7 @@ namespace ESC_training.Core
             // check of entity is in the map i.e. component exists for this entity
             if(!_entityToIndex.ContainsKey(entity.Id))
             {
-                throw new KeyNotFoundException(
-                    $"Attempting to remove non-existent component of type {typeof(T)} from Entity {entity.Id}.");
+                throw new ComponentNotFoundException(typeof(T), entity.Id);
             }
 
             // copy component at the end of the array into deleted element's place to keep the array dense
@@ -74,8 +72,7 @@ namespace ESC_training.Core
         {
             if (!_entityToIndex.ContainsKey(entity.Id))
             {
-                throw new KeyNotFoundException(
-                    $"Attempting to get the non-existent component of type {typeof(T)} from Entity {entity.Id}.");
+                throw new ComponentNotFoundException(typeof(T), entity.Id);
             }
             return ref _componentArray[_entityToIndex[entity.Id]];
         }

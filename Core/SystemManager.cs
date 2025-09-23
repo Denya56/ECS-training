@@ -1,4 +1,4 @@
-﻿using ESC_training.Entities;
+﻿using ESC_training.Exceptions;
 
 namespace ESC_training.Core
 {
@@ -18,7 +18,7 @@ namespace ESC_training.Core
 
             if (_systems.ContainsKey(systemType))
             {
-                throw new InvalidOperationException("Registering system more than once.");
+                throw new SystemAlreadyRegisteredException(systemType);
             }
 
             var system = new T();
@@ -31,7 +31,7 @@ namespace ESC_training.Core
 
             if (!_systems.ContainsKey(systemType))
             {
-                throw new InvalidOperationException("System used before registered.");
+                throw new SystemNotRegisteredException(systemType);
             }
 
             _signatures[systemType] = signature;
@@ -49,6 +49,7 @@ namespace ESC_training.Core
             {
                 var type = pair.Key;
                 var system = pair.Value;
+                // can remove exception after system auto signature added 
                 if (!_signatures.TryGetValue(type, out var systemSignature))
                     throw new InvalidOperationException($"Signature for system {type.Name} not set before updating entity {entity}.");
 

@@ -1,6 +1,4 @@
-﻿using ESC_training.Entities;
-
-namespace ESC_training.Core
+﻿namespace ESC_training.Core
 {
     internal class Coordinator
     {
@@ -15,7 +13,7 @@ namespace ESC_training.Core
             _systemManager = new SystemManager();
         }
 
-        // Entity methods
+        #region Entity methods
         public Entity CreateEntity()
         {
             return _entityManager.CreateEntity();
@@ -26,8 +24,9 @@ namespace ESC_training.Core
             _componentManager.EntityDestroyed(entity);
             _systemManager.EntityDestroyed(entity);
         }
+        #endregion
 
-        // Component methods
+        #region Component methods
         public void RegisterComponent<T>()
         {
             _componentManager.RegisterComponent<T>();
@@ -60,8 +59,9 @@ namespace ESC_training.Core
         {
             return _componentManager.GetComponentType<T>();
         }
-            
-        // System methods
+        #endregion
+
+        #region System methods
         public T RegisterSystem<T>() where T : Systems.System, new()
         {
             return _systemManager.RegisterSystem<T>();
@@ -70,5 +70,6 @@ namespace ESC_training.Core
         {
             _systemManager.SetSignature<T>(signature);
         }
+        #endregion
     }
 }
