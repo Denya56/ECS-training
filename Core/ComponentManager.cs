@@ -65,6 +65,10 @@ namespace ESC_training.Core
         {
             return ref GetComponentArray<T>().GetData(entity);
         }
+        public bool HasComponent<T>(Entity entity)
+        {
+            return GetComponentArray<T>().HasData(entity);
+        }
         public void EntityDestroyed(Entity entity)
         {
             // notify each component array that an entity has been destroyed

@@ -59,6 +59,10 @@
         {
             return _componentManager.GetComponentType<T>();
         }
+        public bool HasComponent<T>(Entity entity)
+        {
+            return _componentManager.HasComponent<T>(entity);
+        }
         #endregion
 
         #region System methods

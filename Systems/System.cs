@@ -5,6 +5,7 @@ namespace ESC_training.Systems
     internal abstract class System
     {
         internal HashSet<Entity> entities;
+        public Coordinator Coordinator { get; set; }
 
         public System()
         {

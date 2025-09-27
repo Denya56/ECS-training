@@ -76,7 +76,10 @@ namespace ESC_training.Core
             }
             return ref _componentArray[_entityToIndex[entity.Id]];
         }
-
+        public bool HasData(Entity entity)
+        {
+            return _entityToIndex.ContainsKey(entity.Id);
+        }
         public void EntityDestroyed(Entity entity)
         {
             if (_entityToIndex.ContainsKey(entity.Id))

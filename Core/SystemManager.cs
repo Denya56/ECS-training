@@ -49,7 +49,8 @@ namespace ESC_training.Core
             {
                 var type = pair.Key;
                 var system = pair.Value;
-                // can remove exception after system auto signature added 
+                // can remove exception after safer way to set system signatures is implemented
+                // now will throw if system signature not set right after registering it
                 if (!_signatures.TryGetValue(type, out var systemSignature))
                     throw new InvalidOperationException($"Signature for system {type.Name} not set before updating entity {entity}.");
 
