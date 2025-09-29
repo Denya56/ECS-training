@@ -33,6 +33,7 @@ namespace ESC_training.Core
             _indexToEntity[newIndex] = entity.Id;
             // store the component in the packed array
             _componentArray[newIndex] = component;
+
             ++_arrayIndex;
         }
 
@@ -65,7 +66,6 @@ namespace ESC_training.Core
             // removed entity is the last one since we just moved it
             _indexToEntity.Remove(lastComponentIndex);
 
-            // decrement to match the packed array new size
             --_arrayIndex;
         }
         public ref T GetData(Entity entity)

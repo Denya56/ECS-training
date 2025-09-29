@@ -1,9 +1,10 @@
 ﻿using ESC_training.Components;
 using ESC_training.Core;
 using ESC_training.Systems;
+using Raylib_cs;
+using System.Diagnostics;
 using System.Numerics;
 using static ESC_training.Config;
-using Raylib_cs;
 using Transform2D = ESC_training.Components.Transform2D;
 
 var coordinator = new Coordinator();
@@ -54,8 +55,8 @@ for (int i = 0; i < MAX_ENTITIES; i++)
     coordinator.AddComponent(entity, new Transform2D
     {
         Position = new Vector2(
-            (float)(rand.NextDouble() * 800),
-            (float)(-rand.NextDouble() * 200 - 100)
+            (float)(rand.NextDouble() * WINDOW_WIDTH),
+            (float)(-rand.NextDouble() * 300 - 100)
         ),
 
         Scale = new Vector2(scale, scale)
@@ -85,59 +86,64 @@ for (int i = 0; i < MAX_ENTITIES; i++)
             Radius = (int)(5 + rand.NextDouble() * 10)
         });
     }
-    /*Rotation = new Vector3(
-            (float)(rand.NextDouble() * 3),
-            (float)(rand.NextDouble() * 3),
-            (float)(rand.NextDouble() * 3)
-        ),*/
-
     entities.Add(entity);
 }
 
-Raylib.InitWindow(800, 600, "Raylib Window");
-Raylib.SetTargetFPS(60);
+Raylib.InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Raylib Window");
+var swTotal = Stopwatch.StartNew();
+List<int> fpsHistory = new();
 
 while (!Raylib.WindowShouldClose())
 {
     float dt = Raylib.GetFrameTime();
+
+    var swPhysics = Stopwatch.StartNew();
     physicsSystem.Update(dt);
+    swPhysics.Stop();
+
+    var swRender = Stopwatch.StartNew();
     renderingSystem.Update(dt);
+    swRender.Stop();
+
+    int fps = Raylib.GetFPS();
+    fpsHistory.Add(fps);
+    float avgFps = (float)fpsHistory.Average();
+
     Raylib.BeginDrawing();
-    Raylib.ClearBackground(Color.RayWhite);
+    Raylib.ClearBackground(Color.DarkGray);
+
+    foreach (var command in renderingSystem.Commands)
+    {
+        if (command.Command == RenderingSystem.RenderCommand.CommandType.DrawRectangle)
+        {
+            Raylib.DrawRectangle(
+                (int)command.Position.X,
+                (int)command.Position.Y,
+                command.Size * (int)command.Scale.X,
+                command.Size * (int)command.Scale.Y,
+                Raylib.ColorFromNormalized(command.Color));
+        }
+        else if (command.Command == RenderingSystem.RenderCommand.CommandType.DrawCircle)
+        {
+            Raylib.DrawCircle(
+                (int)command.Position.X,
+                (int)command.Position.Y,
+                command.Size * command.Scale.X,
+                Raylib.ColorFromNormalized(command.Color));
+        }
+    }
+
+    long totalMemory = GC.GetTotalMemory(false);
+
+    string stats = $"FPS: {fps} (Avg: {avgFps:F1})\n" +
+                   $"Physics: {swPhysics.Elapsed.TotalMilliseconds:F2} ms\n" +
+                   $"Rendering: {swRender.Elapsed.TotalMilliseconds:F2} ms\n" +
+                   $"Memory: {totalMemory / 1024.0 / 1024.0:F2} MB\n" +
+                   $"Entities: {entities.Count}";
+
+    Raylib.DrawText(stats, 10, 30, 20, Color.White);
 
     Raylib.EndDrawing();
 }
 
 Raylib.CloseWindow();
-
-// main loop
-//bool quit = false;
-/*var sw = new System.Diagnostics.Stopwatch();
-sw.Start();
-float elapsedTime = 0f;
-float simulationDuration = 10f;
-
-//var entit1y = coordinator.CreateEntity();
-
-*//*coordinator.DestroyEntity(entities[0]);
-var pos = coordinator.GetComponent<Transform>(entities[0]);*//*
-while (elapsedTime < simulationDuration)
-{
-    float dt = (float)sw.Elapsed.TotalSeconds;
-    sw.Restart();
-    elapsedTime += dt;
-
-    physicsSystem.Update(dt);
-
-    Console.Clear();
-    Console.WriteLine($"{"Entity",-6} {"X",8} {"Y",8} {"Z",8}");
-    Console.WriteLine(new string('-', 32));
-
-    for (int i = 0; i < Math.Min(10, MAX_ENTITIES); i++)
-    {
-        var t = coordinator.GetComponent<Transform2D>(entities[i]);
-        Console.WriteLine($"{i,-6} {t.Position.X,8:F2} {t.Position.Y,8:F2}");
-    }
-    Thread.Sleep(16);
-}*/
-Console.WriteLine("Simulation finished.");

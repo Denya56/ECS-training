@@ -8,6 +8,7 @@ namespace ESC_training.Systems
     {
         public override void Update(float dt)
         {
+            // move to System base class?
             if (Coordinator == null)
                 throw new InvalidOperationException("Coordinator must be assigned before calling Update.");
 
