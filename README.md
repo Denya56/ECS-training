@@ -14,6 +14,10 @@ A simple Entity-Component-System (ECS) framework in C# for learning game archite
 
 ---
 
+https://github.com/user-attachments/assets/a3f0c054-438c-496c-afc1-9352339b94d2
+
+---
+
 ## Usage Examples
 
 ### Register Components
@@ -75,7 +79,3 @@ while (!Raylib.WindowShouldClose())
     Raylib.EndDrawing();
 }
 ```
-
-
-https://github.com/user-attachments/assets/a3f0c054-438c-496c-afc1-9352339b94d2
-
