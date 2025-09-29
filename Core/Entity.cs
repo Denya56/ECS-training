@@ -1,4 +1,4 @@
-﻿namespace ESC_training.Entities
+﻿namespace ESC_training.Core
 {
     internal sealed class Entity
     {

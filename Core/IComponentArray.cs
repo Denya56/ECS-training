@@ -1,6 +1,4 @@
-﻿using ESC_training.Entities;
-
-namespace ESC_training.Core
+﻿namespace ESC_training.Core
 {
 
     internal interface IComponentArray
