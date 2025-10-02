@@ -1,16 +1,34 @@
 ﻿namespace ESC_training.Core
 {
-    internal class Coordinator
+    internal class Coordinator : ISubject
     {
+        private static Coordinator _instance;
+        public static Coordinator Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new Coordinator();
+                }
+                return _instance;
+            }
+        }
+
         private ComponentManager _componentManager;
         private EntityManager _entityManager;
         private SystemManager _systemManager;
 
+        private List<IObserver> _observers = new List<IObserver>();
         public Coordinator()
         {
             _componentManager = new ComponentManager();
             _entityManager = new EntityManager();
             _systemManager = new SystemManager();
+
+            Attach(_entityManager);
+            Attach(_componentManager);
+            Attach(_systemManager);
         }
 
         #region Entity methods
@@ -20,9 +38,7 @@
         }
         public void DestroyEntity(Entity entity)
         {
-            _entityManager.DestroyEntity(entity);
-            _componentManager.EntityDestroyed(entity);
-            _systemManager.EntityDestroyed(entity);
+            Notify(entity);
         }
         #endregion
 
@@ -75,5 +91,23 @@
             _systemManager.SetSignature<T>(signature);
         }
         #endregion
+
+        public void Notify(Entity entity)
+        {
+            foreach (var observer in _observers)
+            {
+                observer.Update(entity);
+            }
+        }
+
+        public void Attach(IObserver observer)
+        {
+            _observers.Add(observer);
+        }
+
+        public void Detach(IObserver observer)
+        {
+            _observers.Remove(observer);
+        }
     }
 }

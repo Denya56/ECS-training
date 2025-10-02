@@ -3,7 +3,7 @@ using static ESC_training.Config;
 
 namespace ESC_training.Core
 {
-    internal class EntityManager
+    internal class EntityManager : IObserver
     {
         public Queue<Entity> AvailableEntities { get; set; }
         private int _livingEntityCount;
@@ -59,6 +59,11 @@ namespace ESC_training.Core
                 throw new EntityOutOfRangeException(entity.Id);
             }
             return Signatures[entity.Id];
+        }
+
+        public void Update(Entity entity)
+        {
+            DestroyEntity(entity);
         }
     }
 }

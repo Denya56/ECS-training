@@ -2,7 +2,7 @@
 
 namespace ESC_training.Core
 {
-    internal class SystemManager
+    internal class SystemManager : IObserver
     {
         private Dictionary<Type, Systems.System> _systems;
         private Dictionary<Type, Signature> _signatures;
@@ -63,6 +63,11 @@ namespace ESC_training.Core
                     system.entities.Remove(entity);
                 }
             }
+        }
+
+        public void Update(Entity entity)
+        {
+            EntityDestroyed(entity);
         }
     }
 }

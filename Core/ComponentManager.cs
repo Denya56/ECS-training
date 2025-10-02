@@ -3,7 +3,7 @@ using static ESC_training.Config;
 
 namespace ESC_training.Core
 {
-    internal class ComponentManager
+    internal class ComponentManager : IObserver
     {
         private Dictionary<Type, ComponentType> _componentTypes;
         private Dictionary<Type, IComponentArray> _componentArrays;        
@@ -79,6 +79,11 @@ namespace ESC_training.Core
                 var componentArray = pair.Value;
                 componentArray.EntityDestroyed(entity);
             }
+        }
+
+        public void Update(Entity entity)
+        {
+            EntityDestroyed(entity);
         }
     }
 }

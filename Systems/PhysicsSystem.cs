@@ -6,12 +6,8 @@ namespace ESC_training.Systems
 {
     internal class PhysicsSystem : System
     {
-        public override void Update(float dt)
+        protected override void UpdateInternal(float dt)
         {
-            // move to System base class?
-            if (Coordinator == null)
-                throw new InvalidOperationException("Coordinator must be assigned before calling Update.");
-
             foreach (Entity entity in entities)
             {
                 ref var rigidBody = ref Coordinator.GetComponent<RigidBody2D>(entity);
