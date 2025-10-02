@@ -3,7 +3,7 @@ using static ESC_training.Config;
 
 namespace ESC_training.Core
 {
-    internal class EntityManager : IObserver
+    internal class EntityManager : IObserver<OnEntityDeletedEvent>
     {
         public Queue<Entity> AvailableEntities { get; set; }
         private int _livingEntityCount;
@@ -61,9 +61,9 @@ namespace ESC_training.Core
             return Signatures[entity.Id];
         }
 
-        public void Update(Entity entity)
+        public void Update(OnEntityDeletedEvent @event)
         {
-            DestroyEntity(entity);
+            DestroyEntity(@event.Entity);
         }
     }
 }

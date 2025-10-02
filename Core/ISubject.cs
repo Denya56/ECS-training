@@ -2,8 +2,8 @@
 {
     internal interface ISubject
     {
-        void Attach(IObserver observer);
-        void Detach(IObserver observer);
-        void Notify(Entity entity);
+        void Attach<TEvent>(IObserver<TEvent> observer);
+        void Detach<TEvent>(IObserver<TEvent> observer);
+        void Notify<TEvent>(TEvent @event);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace ESC_training.Core
 {
-    internal class SystemManager : IObserver
+    internal class SystemManager : IObserver<OnEntityDeletedEvent>
     {
         private Dictionary<Type, Systems.System> _systems;
         private Dictionary<Type, Signature> _signatures;
@@ -65,9 +65,9 @@ namespace ESC_training.Core
             }
         }
 
-        public void Update(Entity entity)
+        public void Update(OnEntityDeletedEvent @event)
         {
-            EntityDestroyed(entity);
+            EntityDestroyed(@event.Entity);
         }
     }
 }

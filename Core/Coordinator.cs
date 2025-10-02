@@ -19,7 +19,7 @@
         private EntityManager _entityManager;
         private SystemManager _systemManager;
 
-        private List<IObserver> _observers = new List<IObserver>();
+        private Dictionary<Type, List<IObserver<TEvent>>> _observers;
         public Coordinator()
         {
             _componentManager = new ComponentManager();
@@ -38,7 +38,8 @@
         }
         public void DestroyEntity(Entity entity)
         {
-            Notify(entity);
+            var @event = new OnEntityDeletedEvent(entity);
+            Notify<OnEntityDeletedEvent>(@event);
         }
         #endregion
 
@@ -92,20 +93,20 @@
         }
         #endregion
 
-        public void Notify(Entity entity)
+        public void Notify<TEvent>(TEvent @event)
         {
             foreach (var observer in _observers)
             {
-                observer.Update(entity);
+                observer.Value.ForEach(x => x.Update(@event));
             }
         }
 
-        public void Attach(IObserver observer)
+        public void Attach<TEvent>(IObserver<TEvent> observer)
         {
             _observers.Add(observer);
         }
 
-        public void Detach(IObserver observer)
+        public void Detach<TEvent>(IObserver<TEvent> observer)
         {
             _observers.Remove(observer);
         }

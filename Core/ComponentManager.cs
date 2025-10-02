@@ -3,7 +3,7 @@ using static ESC_training.Config;
 
 namespace ESC_training.Core
 {
-    internal class ComponentManager : IObserver
+    internal class ComponentManager : IObserver<OnEntityDeletedEvent>
     {
         private Dictionary<Type, ComponentType> _componentTypes;
         private Dictionary<Type, IComponentArray> _componentArrays;        
@@ -81,9 +81,9 @@ namespace ESC_training.Core
             }
         }
 
-        public void Update(Entity entity)
+        public void Update(OnEntityDeletedEvent @event)
         {
-            EntityDestroyed(entity);
+            EntityDestroyed(@event.Entity);
         }
     }
 }

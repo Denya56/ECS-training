@@ -2,6 +2,6 @@
 {
     internal interface IObserver<TEvent>
     {
-        void Update(Entity entity);
+        void Update(TEvent @event);
     }
 }
