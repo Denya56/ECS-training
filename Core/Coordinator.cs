@@ -57,7 +57,6 @@ namespace ESC_training.Core
             _entityManager.SetSignature(entity, signature);
 
             _eventManager.Notify(new OnEntitySignatureChangedEvent(entity, signature));
-            //_systemManager.EntitySignatureChanged(entity, signature);
         }
         public void RemoveComponent<T>(Entity entity)
         {
@@ -68,7 +67,6 @@ namespace ESC_training.Core
             _entityManager.SetSignature(entity, signature);
 
             _eventManager.Notify(new OnEntitySignatureChangedEvent(entity, signature));
-            //_systemManager.EntitySignatureChanged(entity, signature);
         }
         public ref T GetComponent<T>(Entity entity)
         {

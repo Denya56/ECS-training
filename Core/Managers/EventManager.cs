@@ -7,7 +7,6 @@ namespace ESC_training.Core.Managers
         private readonly Dictionary<Type, List<Delegate>> _subscribers = new();
         public void Subscribe<TEvent>(Action<TEvent> listener)
         {
-            //Debug.WriteLine($"3 EntityManager: Handling {listener}");
             var eventType = typeof(TEvent);
 
             if (!_subscribers.TryGetValue(eventType, out var list))
@@ -34,7 +33,6 @@ namespace ESC_training.Core.Managers
         }
         public void Notify<TEvent>(TEvent @event)
         {
-            //Debug.WriteLine($"4 EntityManager: Handling OnEntityDeletedEvent {@event}");
             var eventType = typeof(TEvent);
 
             if (_subscribers.TryGetValue(eventType, out var list))

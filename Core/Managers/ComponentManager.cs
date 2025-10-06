@@ -80,7 +80,6 @@ namespace ESC_training.Core.Managers
         }
         // notify each component array that an entity has been destroyed
         // if it has a component for that entity, it will remove it
-        // replace with observer later
         private void EntityDestroyed(Entity entity)
         {
             foreach (var pair in _componentArrays)
