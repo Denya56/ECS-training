@@ -1,16 +1,24 @@
-﻿using ESC_training.Exceptions;
+﻿using ESC_training.Core.Events;
+using ESC_training.Exceptions;
 
-namespace ESC_training.Core
+namespace ESC_training.Core.Managers
 {
-    internal class SystemManager : IObserver
+    internal class SystemManager
     {
+        private readonly EventManager _eventManager;
+
         private Dictionary<Type, Systems.System> _systems;
         private Dictionary<Type, Signature> _signatures;
 
-        public SystemManager() 
+        public SystemManager(EventManager eventManager) 
         {
             _systems = new Dictionary<Type, Systems.System>();
             _signatures = new Dictionary<Type, Signature>();
+
+            _eventManager = eventManager;
+
+            _eventManager.Subscribe<OnEntityDeletedEvent>(HandleEntityDeleted);
+            _eventManager.Subscribe<OnEntitySignatureChangedEvent>(HandleEntitySignatureChanged);
         }
         public T RegisterSystem<T>() where T : Systems.System, new()
         {
@@ -36,7 +44,7 @@ namespace ESC_training.Core
 
             _signatures[systemType] = signature;
         }
-        public void EntityDestroyed(Entity entity)
+        private void EntityDestroyed(Entity entity)
         {
             foreach (var system in _systems.Values)
             {
@@ -64,10 +72,13 @@ namespace ESC_training.Core
                 }
             }
         }
-
-        public void Update(Entity entity)
+        public void HandleEntityDeleted(OnEntityDeletedEvent e)
         {
-            EntityDestroyed(entity);
+            EntityDestroyed(e.Entity);
+        }
+        public void HandleEntitySignatureChanged(OnEntitySignatureChangedEvent e)
+        {
+            EntitySignatureChanged(e.Entity, e.Signature);
         }
     }
 }
