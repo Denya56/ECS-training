@@ -11,6 +11,14 @@ namespace ESC_training.Systems
         {
             entities = new HashSet<Entity>();
         }
-        public abstract void Update(float dt);
+        public void Update(float dt)
+        {
+            if (Coordinator == null)
+                throw new InvalidOperationException("Coordinator must be assigned before calling Update.");
+
+            UpdateInternal(dt);
+        }
+
+        protected abstract void UpdateInternal(float dt);
     }
 }

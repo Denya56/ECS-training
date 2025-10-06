@@ -1,5 +1,4 @@
 ﻿using ESC_training.Exceptions;
-using System.Linq;
 using static ESC_training.Config;
 
 namespace ESC_training.Core

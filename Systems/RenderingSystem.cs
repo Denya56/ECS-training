@@ -9,12 +9,8 @@ namespace ESC_training.Systems
     internal class RenderingSystem : System
     {
         public List<RenderCommand> Commands = new List<RenderCommand>(MAX_ENTITIES);
-        public override void Update(float dt)
+        protected override void UpdateInternal(float dt)
         {
-            // move to System base class?
-            if (Coordinator == null)
-                throw new InvalidOperationException("Coordinator must be assigned before calling Update.");
-
             Commands.Clear();
             foreach (Entity entity in entities)
             {

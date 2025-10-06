@@ -7,7 +7,7 @@ using System.Numerics;
 using static ESC_training.Config;
 using Transform2D = ESC_training.Components.Transform2D;
 
-var coordinator = new Coordinator();
+var coordinator = Coordinator.Instance;
 
 coordinator.RegisterComponent<Gravity>();
 coordinator.RegisterComponent<RigidBody2D>();
@@ -33,10 +33,10 @@ renderingSignature.AddComponent(coordinator.GetComponentType<Rendarable>());
 renderingSignature.AddComponent(coordinator.GetComponentType<Transform2D>());
 coordinator.SetSystemSignature<RenderingSystem>(renderingSignature);
 
-var entities = new List<Entity>(MAX_ENTITIES);
+//var entities = new List<Entity>(MAX_ENTITIES);
 var rand = new Random();
 
-for (int i = 0; i < MAX_ENTITIES; i++)
+for (int i = 0; i < MAX_ENTITIES-1; i++)
 {
     var entity = coordinator.CreateEntity();
 
@@ -86,8 +86,11 @@ for (int i = 0; i < MAX_ENTITIES; i++)
             Radius = (int)(5 + rand.NextDouble() * 10)
         });
     }
-    entities.Add(entity);
+    //entities.Add(entity);
 }
+
+coordinator.DestroyEntity(coordinator.CreateEntity());
+
 
 Raylib.InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Raylib Window");
 var swTotal = Stopwatch.StartNew();
@@ -139,7 +142,7 @@ while (!Raylib.WindowShouldClose())
                    $"Physics: {swPhysics.Elapsed.TotalMilliseconds:F2} ms\n" +
                    $"Rendering: {swRender.Elapsed.TotalMilliseconds:F2} ms\n" +
                    $"Memory: {totalMemory / 1024.0 / 1024.0:F2} MB\n" +
-                   $"Entities: {entities.Count}";
+                   $"Entities: {MAX_ENTITIES}";
 
     Raylib.DrawText(stats, 10, 30, 20, Color.White);
 
