@@ -1,15 +1,16 @@
 ﻿using ESC_training.Exceptions;
 using static ESC_training.Config;
 
-namespace ESC_training.Core
+namespace ESC_training.Core.Managers
 {
-    internal class EntityManager : IObserver<OnEntityDeletedEvent>
+    internal class EntityManager
     {
+        private readonly EventManager _eventManager;
         public Queue<Entity> AvailableEntities { get; set; }
         private int _livingEntityCount;
         private Signature[] Signatures = new Signature[MAX_ENTITIES];
 
-        public EntityManager()
+        public EntityManager(EventManager eventManager)
         {
             AvailableEntities = new Queue<Entity>();
             _livingEntityCount = 0;
@@ -18,6 +19,7 @@ namespace ESC_training.Core
             {
                 AvailableEntities.Enqueue(new Entity(i));
             }
+            _eventManager = eventManager;
         }
         public Entity CreateEntity()
         {
@@ -59,11 +61,6 @@ namespace ESC_training.Core
                 throw new EntityOutOfRangeException(entity.Id);
             }
             return Signatures[entity.Id];
-        }
-
-        public void Update(OnEntityDeletedEvent @event)
-        {
-            DestroyEntity(@event.Entity);
         }
     }
 }

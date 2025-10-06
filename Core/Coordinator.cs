@@ -1,6 +1,9 @@
-﻿namespace ESC_training.Core
+﻿using ESC_training.Core.Events;
+using ESC_training.Core.Managers;
+
+namespace ESC_training.Core
 {
-    internal class Coordinator : ISubject
+    internal class Coordinator
     {
         private static Coordinator _instance;
         public static Coordinator Instance
@@ -15,20 +18,17 @@
             }
         }
 
+        private EventManager _eventManager = new EventManager();
+
         private ComponentManager _componentManager;
         private EntityManager _entityManager;
         private SystemManager _systemManager;
-
-        private Dictionary<Type, List<IObserver<TEvent>>> _observers;
+        
         public Coordinator()
         {
-            _componentManager = new ComponentManager();
-            _entityManager = new EntityManager();
-            _systemManager = new SystemManager();
-
-            Attach(_entityManager);
-            Attach(_componentManager);
-            Attach(_systemManager);
+            _componentManager = new ComponentManager(_eventManager);
+            _entityManager = new EntityManager(_eventManager);
+            _systemManager = new SystemManager(_eventManager);
         }
 
         #region Entity methods
@@ -38,8 +38,8 @@
         }
         public void DestroyEntity(Entity entity)
         {
-            var @event = new OnEntityDeletedEvent(entity);
-            Notify<OnEntityDeletedEvent>(@event);
+            _entityManager.DestroyEntity(entity);
+            _eventManager.Notify(new OnEntityDeletedEvent(entity));
         }
         #endregion
 
@@ -50,13 +50,14 @@
         }
         public void AddComponent<T>(Entity entity, T component)
         {
-            _componentManager.AddComponent<T>(entity, component);
+            _componentManager.AddComponent(entity, component);
 
             var signature = _entityManager.GetSignature(entity);
             signature.AddComponent(_componentManager.GetComponentType<T>());
             _entityManager.SetSignature(entity, signature);
 
-            _systemManager.EntitySignatureChanged(entity, signature);
+            _eventManager.Notify(new OnEntitySignatureChangedEvent(entity, signature));
+            //_systemManager.EntitySignatureChanged(entity, signature);
         }
         public void RemoveComponent<T>(Entity entity)
         {
@@ -66,7 +67,8 @@
             signature.RemoveComponent(_componentManager.GetComponentType<T>());
             _entityManager.SetSignature(entity, signature);
 
-            _systemManager.EntitySignatureChanged(entity, signature);
+            _eventManager.Notify(new OnEntitySignatureChangedEvent(entity, signature));
+            //_systemManager.EntitySignatureChanged(entity, signature);
         }
         public ref T GetComponent<T>(Entity entity)
         {
@@ -92,23 +94,5 @@
             _systemManager.SetSignature<T>(signature);
         }
         #endregion
-
-        public void Notify<TEvent>(TEvent @event)
-        {
-            foreach (var observer in _observers)
-            {
-                observer.Value.ForEach(x => x.Update(@event));
-            }
-        }
-
-        public void Attach<TEvent>(IObserver<TEvent> observer)
-        {
-            _observers.Add(observer);
-        }
-
-        public void Detach<TEvent>(IObserver<TEvent> observer)
-        {
-            _observers.Remove(observer);
-        }
     }
 }

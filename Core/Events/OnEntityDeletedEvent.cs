@@ -1,4 +1,4 @@
-﻿namespace ESC_training.Core
+﻿namespace ESC_training.Core.Events
 {
     internal struct OnEntityDeletedEvent
     {

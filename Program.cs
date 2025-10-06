@@ -36,7 +36,7 @@ coordinator.SetSystemSignature<RenderingSystem>(renderingSignature);
 //var entities = new List<Entity>(MAX_ENTITIES);
 var rand = new Random();
 
-for (int i = 0; i < MAX_ENTITIES; i++)
+for (int i = 0; i < MAX_ENTITIES-1; i++)
 {
     var entity = coordinator.CreateEntity();
 
@@ -88,6 +88,9 @@ for (int i = 0; i < MAX_ENTITIES; i++)
     }
     //entities.Add(entity);
 }
+
+coordinator.DestroyEntity(coordinator.CreateEntity());
+
 
 Raylib.InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Raylib Window");
 var swTotal = Stopwatch.StartNew();

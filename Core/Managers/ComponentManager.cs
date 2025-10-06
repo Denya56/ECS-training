@@ -1,19 +1,28 @@
-﻿using ESC_training.Exceptions;
+﻿using ESC_training.Core.Events;
+using ESC_training.Exceptions;
+using System.Diagnostics;
 using static ESC_training.Config;
 
-namespace ESC_training.Core
+namespace ESC_training.Core.Managers
 {
-    internal class ComponentManager : IObserver<OnEntityDeletedEvent>
+    internal class ComponentManager   
     {
+        private readonly EventManager _eventManager;
+
+
         private Dictionary<Type, ComponentType> _componentTypes;
         private Dictionary<Type, IComponentArray> _componentArrays;        
         private ComponentType _nextComponentType;
 
-        public ComponentManager()
+        public ComponentManager(EventManager eventManager)
         {
             _componentTypes = new Dictionary<Type, ComponentType>();
             _componentArrays = new Dictionary<Type, IComponentArray>();
             _nextComponentType = 0;
+
+            _eventManager = eventManager;
+
+            _eventManager.Subscribe<OnEntityDeletedEvent>(HandleEntityDeleted);
         }
         private ComponentArray<T> GetComponentArray<T>()
         {
@@ -69,11 +78,11 @@ namespace ESC_training.Core
         {
             return GetComponentArray<T>().HasData(entity);
         }
-        public void EntityDestroyed(Entity entity)
+        // notify each component array that an entity has been destroyed
+        // if it has a component for that entity, it will remove it
+        // replace with observer later
+        private void EntityDestroyed(Entity entity)
         {
-            // notify each component array that an entity has been destroyed
-            // if it has a component for that entity, it will remove it
-            // replace with observer later
             foreach (var pair in _componentArrays)
             {
                 var componentArray = pair.Value;
@@ -81,9 +90,9 @@ namespace ESC_training.Core
             }
         }
 
-        public void Update(OnEntityDeletedEvent @event)
+        public void HandleEntityDeleted(OnEntityDeletedEvent e)
         {
-            EntityDestroyed(@event.Entity);
+            EntityDestroyed(e.Entity);
         }
     }
 }
