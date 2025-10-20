@@ -1,9 +1,10 @@
 ﻿using ESC_training.Core.Events;
 using ESC_training.Core.Managers;
+using ESC_training.Systems;
 
 namespace ESC_training.Core
 {
-    internal class Coordinator
+    public sealed class Coordinator
     {
         private static Coordinator _instance;
         public static Coordinator Instance
@@ -18,11 +19,11 @@ namespace ESC_training.Core
             }
         }
 
-        private EventManager _eventManager = new EventManager();
+        private readonly EventManager _eventManager = new EventManager();
 
-        private ComponentManager _componentManager;
-        private EntityManager _entityManager;
-        private SystemManager _systemManager;
+        private readonly ComponentManager _componentManager;
+        private readonly EntityManager _entityManager;
+        private readonly SystemManager _systemManager;
         
         public Coordinator()
         {
@@ -39,6 +40,8 @@ namespace ESC_training.Core
         public void DestroyEntity(Entity entity)
         {
             _entityManager.DestroyEntity(entity);
+
+            // notify other managers
             _eventManager.Notify(new OnEntityDeletedEvent(entity));
         }
         #endregion
@@ -56,6 +59,7 @@ namespace ESC_training.Core
             signature.AddComponent(_componentManager.GetComponentType<T>());
             _entityManager.SetSignature(entity, signature);
 
+            // notify other managers
             _eventManager.Notify(new OnEntitySignatureChangedEvent(entity, signature));
         }
         public void RemoveComponent<T>(Entity entity)
@@ -85,6 +89,8 @@ namespace ESC_training.Core
         #region System methods
         public T RegisterSystem<T>() where T : Systems.System, new()
         {
+            var system = new T();
+            system.Coordinator = this;
             return _systemManager.RegisterSystem<T>();
         }
         public void SetSystemSignature<T>(Signature signature)

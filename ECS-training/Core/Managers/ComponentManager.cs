@@ -1,7 +1,7 @@
 ﻿using ESC_training.Core.Events;
 using ESC_training.Exceptions;
 using System.Diagnostics;
-using static ESC_training.Config;
+using static ESC_training.Const;
 
 namespace ESC_training.Core.Managers
 {

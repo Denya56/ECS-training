@@ -1,6 +1,6 @@
 ﻿namespace ESC_training.Core
 {
-    internal sealed class Entity
+    public sealed class Entity
     {
         public int Id { get; }
 

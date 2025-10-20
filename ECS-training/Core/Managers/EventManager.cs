@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace ESC_training.Core.Managers
+﻿namespace ESC_training.Core.Managers
 {
     internal class EventManager
     {
