@@ -4,7 +4,8 @@ using ESC_training.Systems;
 using Raylib_cs;
 using System.Diagnostics;
 using System.Numerics;
-using static ESC_training.Config;
+using static Config;
+using static ESC_training.Const;
 using Transform2D = ESC_training.Components.Transform2D;
 
 var coordinator = Coordinator.Instance;
@@ -33,16 +34,15 @@ renderingSignature.AddComponent(coordinator.GetComponentType<Rendarable>());
 renderingSignature.AddComponent(coordinator.GetComponentType<Transform2D>());
 coordinator.SetSystemSignature<RenderingSystem>(renderingSignature);
 
-//var entities = new List<Entity>(MAX_ENTITIES);
 var rand = new Random();
 
-for (int i = 0; i < MAX_ENTITIES-1; i++)
+for (int i = 0; i < MAX_ENTITIES - 1; i++)
 {
     var entity = coordinator.CreateEntity();
 
     coordinator.AddComponent(entity, new Gravity
     {
-        Force = new Vector2(0f, 5f + (float)rand.NextDouble() * 10f)   
+        Force = new Vector2(0f, 5f + (float)rand.NextDouble() * 10f)
     });
 
     coordinator.AddComponent(entity, new RigidBody2D
@@ -86,11 +86,9 @@ for (int i = 0; i < MAX_ENTITIES-1; i++)
             Radius = (int)(5 + rand.NextDouble() * 10)
         });
     }
-    //entities.Add(entity);
 }
 
 coordinator.DestroyEntity(coordinator.CreateEntity());
-
 
 Raylib.InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Raylib Window");
 var swTotal = Stopwatch.StartNew();

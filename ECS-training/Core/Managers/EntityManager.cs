@@ -1,5 +1,5 @@
 ﻿using ESC_training.Exceptions;
-using static ESC_training.Config;
+using static ESC_training.Const;
 
 namespace ESC_training.Core.Managers
 {

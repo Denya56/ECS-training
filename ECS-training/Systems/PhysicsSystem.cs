@@ -4,7 +4,7 @@ using ESC_training.Core;
 
 namespace ESC_training.Systems
 {
-    internal class PhysicsSystem : System
+    public class PhysicsSystem : System
     {
         protected override void UpdateInternal(float dt)
         {
