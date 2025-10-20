@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ECS-training\ESC-training.csproj" />
+    <ProjectReference Include="..\ECS-training\ECS-training.csproj" />
   </ItemGroup>
 
 </Project>
