@@ -2,8 +2,8 @@
 
 namespace ESC_training.Components
 {
-    internal struct Rendarable
+    public struct Gravity
     {
-        public Vector4 Color;
+        public Vector2 Force;
     }
 }

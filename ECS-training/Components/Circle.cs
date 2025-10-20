@@ -1,6 +1,6 @@
 ﻿namespace ESC_training.Components
 {
-    internal struct Circle
+    public struct Circle
     {
         public int Radius;
     }

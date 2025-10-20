@@ -2,13 +2,13 @@
 using ESC_training.Core;
 using System.Numerics;
 using Transform2D = ESC_training.Components.Transform2D;
-using static ESC_training.Config;
+using static ESC_training.Const;
 
 namespace ESC_training.Systems
 {
-    internal class RenderingSystem : System
+    public class RenderingSystem : System
     {
-        public List<RenderCommand> Commands = new List<RenderCommand>(MAX_ENTITIES);
+        public readonly List<RenderCommand> Commands = new List<RenderCommand>(MAX_ENTITIES);
         protected override void UpdateInternal(float dt)
         {
             Commands.Clear();
