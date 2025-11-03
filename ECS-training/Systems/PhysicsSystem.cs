@@ -1,8 +1,8 @@
-﻿using ESC_training.Components;
-using ESC_training.Core;
+﻿using ECS_training.Components;
+using ECS_training.Core;
 
 
-namespace ESC_training.Systems
+namespace ECS_training.Systems
 {
     public class PhysicsSystem : System
     {

@@ -1,8 +1,7 @@
-﻿using ESC_training.Core.Events;
-using ESC_training.Core.Managers;
-using ESC_training.Systems;
+﻿using ECS_training.Core.Events;
+using ECS_training.Core.Managers;
 
-namespace ESC_training.Core
+namespace ECS_training.Core
 {
     public sealed class Coordinator
     {
@@ -44,6 +43,11 @@ namespace ESC_training.Core
             // notify other managers
             _eventManager.Notify(new OnEntityDeletedEvent(entity));
         }
+
+        public Signature GetEntitySignature(Entity entity)
+        {
+            return _entityManager.GetSignature(entity);
+        }
         #endregion
 
         #region Component methods
@@ -57,7 +61,6 @@ namespace ESC_training.Core
 
             var signature = _entityManager.GetSignature(entity);
             signature.AddComponent(_componentManager.GetComponentType<T>());
-            _entityManager.SetSignature(entity, signature);
 
             // notify other managers
             _eventManager.Notify(new OnEntitySignatureChangedEvent(entity, signature));
@@ -68,7 +71,6 @@ namespace ESC_training.Core
 
             var signature = _entityManager.GetSignature(entity);
             signature.RemoveComponent(_componentManager.GetComponentType<T>());
-            _entityManager.SetSignature(entity, signature);
 
             _eventManager.Notify(new OnEntitySignatureChangedEvent(entity, signature));
         }
@@ -89,9 +91,7 @@ namespace ESC_training.Core
         #region System methods
         public T RegisterSystem<T>() where T : Systems.System, new()
         {
-            var system = new T();
-            system.Coordinator = this;
-            return _systemManager.RegisterSystem<T>();
+            return _systemManager.RegisterSystem<T>(this);
         }
         public void SetSystemSignature<T>(Signature signature)
         {

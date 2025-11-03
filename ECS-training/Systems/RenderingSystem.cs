@@ -1,10 +1,10 @@
-﻿using ESC_training.Components;
-using ESC_training.Core;
+﻿using ECS_training.Components;
+using ECS_training.Core;
 using System.Numerics;
-using Transform2D = ESC_training.Components.Transform2D;
-using static ESC_training.Const;
+using Transform2D = ECS_training.Components.Transform2D;
+using static ECS_training.Const;
 
-namespace ESC_training.Systems
+namespace ECS_training.Systems
 {
     public class RenderingSystem : System
     {

@@ -1,7 +1,7 @@
-﻿using ESC_training.Exceptions;
-using static ESC_training.Const;
+﻿using ECS_training.Exceptions;
+using static ECS_training.Const;
 
-namespace ESC_training.Core
+namespace ECS_training.Core
 {
     internal class ComponentArray<T> : IComponentArray
     {

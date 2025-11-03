@@ -1,7 +1,8 @@
-﻿using ESC_training.Exceptions;
-using static ESC_training.Const;
+﻿using ECS_training.Core.Events;
+using ECS_training.Exceptions;
+using static ECS_training.Const;
 
-namespace ESC_training.Core.Managers
+namespace ECS_training.Core.Managers
 {
     internal class EntityManager
     {
@@ -19,7 +20,10 @@ namespace ESC_training.Core.Managers
             {
                 AvailableEntities.Enqueue(new Entity(i));
             }
+
             _eventManager = eventManager;
+
+            _eventManager.Subscribe<OnEntitySignatureChangedEvent>(HandleEntitySignatureChanged);
         }
         public Entity CreateEntity()
         {
@@ -45,7 +49,7 @@ namespace ESC_training.Core.Managers
             --_livingEntityCount;
         }
 
-        public void SetSignature(Entity entity, Signature signature)
+        private void SetSignature(Entity entity, Signature signature)
         {
             if (entity.Id >= MAX_ENTITIES)
             {
@@ -61,6 +65,11 @@ namespace ESC_training.Core.Managers
                 throw new EntityOutOfRangeException(entity.Id);
             }
             return Signatures[entity.Id];
+        }
+
+        public void HandleEntitySignatureChanged(OnEntitySignatureChangedEvent e)
+        {
+            SetSignature(e.Entity, e.Signature);
         }
     }
 }

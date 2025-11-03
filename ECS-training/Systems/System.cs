@@ -1,10 +1,11 @@
-﻿using ESC_training.Core;
+﻿using ECS_training.Core;
 
-namespace ESC_training.Systems
+namespace ECS_training.Systems
 {
     public abstract class System
     {
-        internal HashSet<Entity> entities;
+        internal readonly HashSet<Entity> entities;
+        public IReadOnlyCollection<Entity> Entities => entities;
         public Coordinator Coordinator { get; set; }
 
         public System()

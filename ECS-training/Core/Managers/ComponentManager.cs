@@ -1,9 +1,8 @@
-﻿using ESC_training.Core.Events;
-using ESC_training.Exceptions;
-using System.Diagnostics;
-using static ESC_training.Const;
+﻿using ECS_training.Core.Events;
+using ECS_training.Exceptions;
+using static ECS_training.Const;
 
-namespace ESC_training.Core.Managers
+namespace ECS_training.Core.Managers
 {
     internal class ComponentManager   
     {

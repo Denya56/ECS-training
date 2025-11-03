@@ -1,4 +1,4 @@
-﻿namespace ESC_training.Core.Managers
+﻿namespace ECS_training.Core.Managers
 {
     internal class EventManager
     {

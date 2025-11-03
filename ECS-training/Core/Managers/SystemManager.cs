@@ -1,7 +1,7 @@
-﻿using ESC_training.Core.Events;
-using ESC_training.Exceptions;
+﻿using ECS_training.Core.Events;
+using ECS_training.Exceptions;
 
-namespace ESC_training.Core.Managers
+namespace ECS_training.Core.Managers
 {
     internal class SystemManager
     {
@@ -20,7 +20,7 @@ namespace ESC_training.Core.Managers
             _eventManager.Subscribe<OnEntityDeletedEvent>(HandleEntityDeleted);
             _eventManager.Subscribe<OnEntitySignatureChangedEvent>(HandleEntitySignatureChanged);
         }
-        public T RegisterSystem<T>() where T : Systems.System, new()
+        public T RegisterSystem<T>(Coordinator coordinator) where T : Systems.System, new()
         {
             Type systemType = typeof(T);
 
@@ -30,6 +30,7 @@ namespace ESC_training.Core.Managers
             }
 
             var system = new T();
+            system.Coordinator = coordinator;
             _systems.Add(systemType, system);
             return system;
         }
@@ -51,7 +52,7 @@ namespace ESC_training.Core.Managers
                 system.entities.Remove(entity);
             }
         }
-        public void EntitySignatureChanged(Entity entity, Signature entitySignature)
+        private void EntitySignatureChanged(Entity entity, Signature entitySignature)
         {
             foreach (var pair in _systems)
             {

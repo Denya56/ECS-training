@@ -1,12 +1,12 @@
-﻿using ESC_training.Components;
-using ESC_training.Core;
-using ESC_training.Systems;
+﻿using ECS_training.Components;
+using ECS_training.Core;
+using ECS_training.Systems;
 using Raylib_cs;
 using System.Diagnostics;
 using System.Numerics;
 using static Config;
-using static ESC_training.Const;
-using Transform2D = ESC_training.Components.Transform2D;
+using static ECS_training.Const;
+using Transform2D = ECS_training.Components.Transform2D;
 
 var coordinator = Coordinator.Instance;
 
@@ -20,8 +20,10 @@ coordinator.RegisterComponent<Circle>();
 var physicsSystem = coordinator.RegisterSystem<PhysicsSystem>();
 physicsSystem.Coordinator = coordinator;
 
+
 var renderingSystem = coordinator.RegisterSystem<RenderingSystem>();
 renderingSystem.Coordinator = coordinator;
+
 
 var physicsSignature = new Signature();
 physicsSignature.AddComponent(coordinator.GetComponentType<Gravity>());
@@ -35,10 +37,12 @@ renderingSignature.AddComponent(coordinator.GetComponentType<Transform2D>());
 coordinator.SetSystemSignature<RenderingSystem>(renderingSignature);
 
 var rand = new Random();
+var entities = new List<Entity>();
 
 for (int i = 0; i < MAX_ENTITIES - 1; i++)
 {
     var entity = coordinator.CreateEntity();
+   entities.Add(entity);
 
     coordinator.AddComponent(entity, new Gravity
     {
@@ -86,7 +90,20 @@ for (int i = 0; i < MAX_ENTITIES - 1; i++)
             Radius = (int)(5 + rand.NextDouble() * 10)
         });
     }
+    
 }
+Debug.WriteLine(coordinator.GetComponent<Gravity>(entities.First()).Force);
+Debug.WriteLine(coordinator.HasComponent<Square>(entities.First()));
+Debug.WriteLine(coordinator.GetComponentType<Transform2D>());
+
+foreach (var entity in entities)
+{
+    if (coordinator.HasComponent<Circle>(entity))
+    {
+        coordinator.RemoveComponent<Circle>(entity);
+    }
+}
+   
 
 coordinator.DestroyEntity(coordinator.CreateEntity());
 

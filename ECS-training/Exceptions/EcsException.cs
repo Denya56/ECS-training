@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ESC_training.Exceptions
+namespace ECS_training.Exceptions
 {
     public class EcsException : Exception
     {

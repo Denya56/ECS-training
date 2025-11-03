@@ -1,4 +1,4 @@
-# ESC-training: A C# ECS Framework
+# ECC-training: A C# ECS Framework
 
 A simple Entity-Component-System (ECS) framework in C# for learning game architecture, inspired by [Austin Morlan's C++ ECS framework](https://austinmorlan.com/posts/entity_component_system/).
 

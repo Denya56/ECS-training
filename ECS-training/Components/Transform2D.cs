@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace ESC_training.Components
+namespace ECS_training.Components
 {
     public struct Transform2D
     {
