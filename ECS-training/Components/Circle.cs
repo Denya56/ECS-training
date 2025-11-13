@@ -1,6 +1,8 @@
-﻿namespace ECS_training.Components
+﻿using ECS_training.Core;
+
+namespace ECS_training.Components
 {
-    public struct Circle
+    public struct Circle : IComponentData
     {
         public int Radius;
     }

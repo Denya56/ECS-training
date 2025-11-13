@@ -5,7 +5,7 @@ using Raylib_cs;
 using System.Diagnostics;
 using System.Numerics;
 using static Config;
-using static ECS_training.Const;
+using static ECS_training.EcsConfig;
 using Transform2D = ECS_training.Components.Transform2D;
 
 var coordinator = Coordinator.Instance;

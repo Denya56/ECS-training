@@ -1,6 +1,6 @@
 ﻿using ECS_training.Core.Events;
 using ECS_training.Exceptions;
-using static ECS_training.Const;
+using static ECS_training.EcsConfig;
 
 namespace ECS_training.Core.Managers
 {
@@ -8,7 +8,7 @@ namespace ECS_training.Core.Managers
     {
         private readonly EventManager _eventManager;
 
-
+        private readonly int _maxComponents;
         private Dictionary<Type, ComponentType> _componentTypes;
         private Dictionary<Type, IComponentArray> _componentArrays;        
         private ComponentType _nextComponentType;
@@ -21,9 +21,10 @@ namespace ECS_training.Core.Managers
 
             _eventManager = eventManager;
 
+            //_maxComponents = componentsLimit;
             _eventManager.Subscribe<OnEntityDeletedEvent>(HandleEntityDeleted);
         }
-        private ComponentArray<T> GetComponentArray<T>()
+        private ComponentArray<T> GetComponentArray<T>() where T : struct, IComponentData
         {
             Type componentType = typeof(T);
 
@@ -34,7 +35,7 @@ namespace ECS_training.Core.Managers
 
             return (ComponentArray<T>)_componentArrays[componentType];
         }
-        public void RegisterComponent<T>()
+        public void RegisterComponent<T>() where T : struct, IComponentData
         {
             Type componentType = typeof(T);
 
@@ -61,19 +62,19 @@ namespace ECS_training.Core.Managers
             }
             return _componentTypes[componentType];
         }
-        public void AddComponent<T>(Entity entity, T component)
+        public void AddComponent<T>(Entity entity, T component) where T : struct, IComponentData
         {
             GetComponentArray<T>().InsertData(entity, component);
         }
-        public void RemoveComponent<T>(Entity entity)
+        public void RemoveComponent<T>(Entity entity) where T : struct, IComponentData
         {
-            GetComponentArray<T>().RemoveData(entity);
+            GetComponentArray<T>().RemoveData(entity); 
         }
-        public ref T GetComponent<T>(Entity entity)
+        public ref T GetComponent<T>(Entity entity) where T : struct, IComponentData
         {
             return ref GetComponentArray<T>().GetData(entity);
         }
-        public bool HasComponent<T>(Entity entity)
+        public bool HasComponent<T>(Entity entity) where T : struct, IComponentData
         {
             return GetComponentArray<T>().HasData(entity);
         }

@@ -2,7 +2,7 @@
 using ECS_training.Core;
 using System.Numerics;
 using Transform2D = ECS_training.Components.Transform2D;
-using static ECS_training.Const;
+using static ECS_training.EcsConfig;
 
 namespace ECS_training.Systems
 {

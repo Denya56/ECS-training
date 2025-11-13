@@ -16,6 +16,10 @@ namespace ECS_training.Exceptions
     {
         public EntityOutOfRangeException(int id) : base($"Entity {id} is out of range.") { }
     }
+    public class EntityNotAliveException : EcsException
+    {
+        public EntityNotAliveException(int id) : base($"Entity {id} is not alive.") { }
+    }
 
     public class ComponentAlreadyRegisteredException : EcsException
     {

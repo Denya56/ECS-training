@@ -18,15 +18,20 @@ namespace ECS_training.Core
             }
         }
 
-        private readonly EventManager _eventManager = new EventManager();
+        private readonly EventManager _eventManager;
 
         private readonly ComponentManager _componentManager;
         private readonly EntityManager _entityManager;
         private readonly SystemManager _systemManager;
         
-        public Coordinator()
+        public Coordinator(int? maxComponents = null, int? maxEntities = null)
         {
-            _componentManager = new ComponentManager(_eventManager);
+            _eventManager = new EventManager();
+
+            int componentsLimit = maxComponents ?? EcsConfig.MAX_COMPONENTS;
+            int entitiesLimit = maxEntities ?? EcsConfig.MAX_ENTITIES;
+
+            _componentManager = new ComponentManager(_eventManager, componentsLimit);
             _entityManager = new EntityManager(_eventManager);
             _systemManager = new SystemManager(_eventManager);
         }
@@ -51,11 +56,11 @@ namespace ECS_training.Core
         #endregion
 
         #region Component methods
-        public void RegisterComponent<T>()
+        public void RegisterComponent<T>() where T : struct, IComponentData
         {
             _componentManager.RegisterComponent<T>();
         }
-        public void AddComponent<T>(Entity entity, T component)
+        public void AddComponent<T>(Entity entity, T component) where T : struct, IComponentData
         {
             _componentManager.AddComponent(entity, component);
 
@@ -65,7 +70,7 @@ namespace ECS_training.Core
             // notify other managers
             _eventManager.Notify(new OnEntitySignatureChangedEvent(entity, signature));
         }
-        public void RemoveComponent<T>(Entity entity)
+        public void RemoveComponent<T>(Entity entity) where T : struct, IComponentData
         {
             _componentManager.RemoveComponent<T>(entity);
 
@@ -74,7 +79,7 @@ namespace ECS_training.Core
 
             _eventManager.Notify(new OnEntitySignatureChangedEvent(entity, signature));
         }
-        public ref T GetComponent<T>(Entity entity)
+        public ref T GetComponent<T>(Entity entity) where T : struct, IComponentData
         {
             return ref _componentManager.GetComponent<T>(entity);
         }
@@ -82,7 +87,7 @@ namespace ECS_training.Core
         {
             return _componentManager.GetComponentType<T>();
         }
-        public bool HasComponent<T>(Entity entity)
+        public bool HasComponent<T>(Entity entity) where T : struct, IComponentData
         {
             return _componentManager.HasComponent<T>(entity);
         }
