@@ -4,11 +4,11 @@
     public struct Signature
     {
         // accepts max 8 components
-        private byte signature;
-        public void AddComponent(int index) => signature |= (byte)(1 << index);
-        public void RemoveComponent(int index) => signature &= (byte)~(1 << index);
-        internal void Reset() => signature = 0;
-        public bool HasComponent(int index) => (signature & (byte)(1 << index)) != 0;
+        private ulong signature;
+        public void AddComponent(int index) => signature |= 1UL << index;
+        public void RemoveComponent(int index) => signature &= ~(1UL << index);
+        internal void Reset() => signature = 0UL;
+        public bool HasComponent(int index) => (signature & (1UL << index)) != 0;
         public bool HasComponents(Signature other) => (signature & other.signature) == other.signature;
     }
 }

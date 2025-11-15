@@ -25,9 +25,7 @@
                 list.Remove(listener);
                 if (list.Count == 0)
                     _subscribers.Remove(eventType);
-            }
-
-            
+            }            
         }
         public void Notify<TEvent>(TEvent @event)
         {

@@ -1,5 +1,6 @@
 ﻿using ECS_training.Core.Events;
 using ECS_training.Core.Managers;
+using ECS_training.Exceptions;
 
 namespace ECS_training.Core
 {
@@ -31,7 +32,7 @@ namespace ECS_training.Core
             int componentsLimit = maxComponents ?? EcsConfig.MAX_COMPONENTS;
             int entitiesLimit = maxEntities ?? EcsConfig.MAX_ENTITIES;
 
-            _componentManager = new ComponentManager(_eventManager, componentsLimit);
+            _componentManager = new ComponentManager(_eventManager);
             _entityManager = new EntityManager(_eventManager);
             _systemManager = new SystemManager(_eventManager);
         }
@@ -87,6 +88,10 @@ namespace ECS_training.Core
         {
             return _componentManager.GetComponentType<T>();
         }
+        internal ComponentType GetComponentType(Type componentType)
+        {
+            return _componentManager.GetComponentType(componentType);
+        }
         public bool HasComponent<T>(Entity entity) where T : struct, IComponentData
         {
             return _componentManager.HasComponent<T>(entity);
@@ -94,9 +99,9 @@ namespace ECS_training.Core
         #endregion
 
         #region System methods
-        public T RegisterSystem<T>() where T : Systems.System, new()
+        public T RegisterSystem<T>() where T : Systems.ECSSystem, new()
         {
-            return _systemManager.RegisterSystem<T>(this);
+            return _systemManager.RegisterSystem<T>();
         }
         public void SetSystemSignature<T>(Signature signature)
         {

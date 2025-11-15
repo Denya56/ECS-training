@@ -18,23 +18,7 @@ coordinator.RegisterComponent<Square>();
 coordinator.RegisterComponent<Circle>();
 
 var physicsSystem = coordinator.RegisterSystem<PhysicsSystem>();
-physicsSystem.Coordinator = coordinator;
-
-
 var renderingSystem = coordinator.RegisterSystem<RenderingSystem>();
-renderingSystem.Coordinator = coordinator;
-
-
-var physicsSignature = new Signature();
-physicsSignature.AddComponent(coordinator.GetComponentType<Gravity>());
-physicsSignature.AddComponent(coordinator.GetComponentType<RigidBody2D>());
-physicsSignature.AddComponent(coordinator.GetComponentType<Transform2D>());
-coordinator.SetSystemSignature<PhysicsSystem>(physicsSignature);
-
-var renderingSignature = new Signature();
-renderingSignature.AddComponent(coordinator.GetComponentType<Rendarable>());
-renderingSignature.AddComponent(coordinator.GetComponentType<Transform2D>());
-coordinator.SetSystemSignature<RenderingSystem>(renderingSignature);
 
 var rand = new Random();
 var entities = new List<Entity>();
@@ -92,20 +76,6 @@ for (int i = 0; i < MAX_ENTITIES - 1; i++)
     }
     
 }
-Debug.WriteLine(coordinator.GetComponent<Gravity>(entities.First()).Force);
-Debug.WriteLine(coordinator.HasComponent<Square>(entities.First()));
-Debug.WriteLine(coordinator.GetComponentType<Transform2D>());
-
-foreach (var entity in entities)
-{
-    if (coordinator.HasComponent<Circle>(entity))
-    {
-        coordinator.RemoveComponent<Circle>(entity);
-    }
-}
-   
-
-coordinator.DestroyEntity(coordinator.CreateEntity());
 
 Raylib.InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Raylib Window");
 var swTotal = Stopwatch.StartNew();

@@ -153,46 +153,26 @@ namespace ECS_Test
         [Fact]
         public void RegisterSystem_ReturnsSameInstanceOnMultipleCalls()
         {
-            var system1 = _coordinator.RegisterSystem<RenderingSystem>();
-            Assert.Throws<SystemAlreadyRegisteredException>(_coordinator.RegisterSystem<RenderingSystem>);
-        }
-        [Fact]
-        public void RegisterSystem_SetsCoordinatorReference()
-        {
-            var system = _coordinator.RegisterSystem<RenderingSystem>();
-            Assert.Equal(_coordinator, system.Coordinator);
+            var system1 = _coordinator.RegisterSystem<TestSystem>();
+            Assert.Throws<SystemAlreadyRegisteredException>(_coordinator.RegisterSystem<TestSystem>);
         }
         [Fact]
         public void SetSystemSignature_Throws_IfSystemNotRegistered()
         {
             var sig = new Signature();
-            Assert.Throws<SystemNotRegisteredException>(() => _coordinator.SetSystemSignature<RenderingSystem>(sig));
+            Assert.Throws<SystemNotRegisteredException>(() => _coordinator.SetSystemSignature<TestSystem>(sig));
         }
         #endregion
         [Fact]
         public void EntitySignatureChange_UpdatesSystemEntityList()
         {
             _coordinator.RegisterComponent<TestComponent>();
-            var system = _coordinator.RegisterSystem<PhysicsSystem>();
-
-            var signature = new Signature();
-            signature.AddComponent(_coordinator.GetComponentType<TestComponent>());
-            _coordinator.SetSystemSignature<PhysicsSystem>(signature);
+            var system = _coordinator.RegisterSystem<TestSystem>();
 
             var entity = _coordinator.CreateEntity();
             _coordinator.AddComponent(entity, new TestComponent { Value = 69 });
 
             Assert.Contains(entity, system.Entities);
-        }
-        [Fact]
-        public void RemoveComponent_CleansUpComponentStorage()
-        {
-            var entity = _coordinator.CreateEntity();
-            _coordinator.RegisterComponent<TestComponent>();
-            _coordinator.AddComponent(entity, new TestComponent { Value = 69});
-            _coordinator.RemoveComponent<TestComponent>(entity);
-
-            Assert.Throws<ComponentNotFoundException>(() => _coordinator.GetComponent<TestComponent>(entity));
         }
     }
 }

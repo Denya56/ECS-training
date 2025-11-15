@@ -6,7 +6,7 @@ namespace ECS_training
     public static class EcsConfig
     {
         public const int MAX_ENTITIES = 10000;
-        public const int MAX_COMPONENTS = 8;
+        public const int MAX_COMPONENTS = 64;
 
         /*public int MaxEntities { get; }
         public int MaxComponents { get; }

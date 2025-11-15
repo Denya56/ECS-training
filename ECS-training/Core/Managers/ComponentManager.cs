@@ -8,7 +8,6 @@ namespace ECS_training.Core.Managers
     {
         private readonly EventManager _eventManager;
 
-        private readonly int _maxComponents;
         private Dictionary<Type, ComponentType> _componentTypes;
         private Dictionary<Type, IComponentArray> _componentArrays;        
         private ComponentType _nextComponentType;
@@ -20,8 +19,6 @@ namespace ECS_training.Core.Managers
             _nextComponentType = 0;
 
             _eventManager = eventManager;
-
-            //_maxComponents = componentsLimit;
             _eventManager.Subscribe<OnEntityDeletedEvent>(HandleEntityDeleted);
         }
         private ComponentArray<T> GetComponentArray<T>() where T : struct, IComponentData
@@ -56,11 +53,16 @@ namespace ECS_training.Core.Managers
         {
             Type componentType = typeof(T);
 
-            if (!_componentTypes.ContainsKey(componentType))
-            {
+            if (!_componentTypes.TryGetValue(componentType, out byte id))
                 throw new ComponentNotRegisteredException(componentType);
-            }
-            return _componentTypes[componentType];
+            return id;
+        }
+        public ComponentType GetComponentType(Type componentType)
+        {
+            if (!_componentTypes.TryGetValue(componentType, out var id))
+                throw new ComponentNotRegisteredException(componentType);
+
+            return id;
         }
         public void AddComponent<T>(Entity entity, T component) where T : struct, IComponentData
         {
