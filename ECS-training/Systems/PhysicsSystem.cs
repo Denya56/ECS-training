@@ -1,18 +1,21 @@
-﻿using ESC_training.Components;
-using ESC_training.Core;
+﻿using ECS_training.Components;
+using ECS_training.Core;
 
 
-namespace ESC_training.Systems
+namespace ECS_training.Systems
 {
-    public class PhysicsSystem : System
+    public class PhysicsSystem : ECSSystem
     {
+        [RequireComponent] public Gravity Gravity;
+        [RequireComponent] public RigidBody2D RigidBody2D;
+        [RequireComponent] public Transform2D Transform2D;
         protected override void UpdateInternal(float dt)
         {
             foreach (Entity entity in entities)
             {
-                ref var rigidBody = ref Coordinator.GetComponent<RigidBody2D>(entity);
-                ref var transform = ref Coordinator.GetComponent<Transform2D>(entity);
-                var gravity = Coordinator.GetComponent<Gravity>(entity);
+                ref var rigidBody = ref Coordinator.Instance.GetComponent<RigidBody2D>(entity);
+                ref var transform = ref Coordinator.Instance.GetComponent<Transform2D>(entity);
+                var gravity = Coordinator.Instance.GetComponent<Gravity>(entity);
 
                 transform.Position += rigidBody.Velocity * dt;
                 rigidBody.Velocity += gravity.Force * dt;

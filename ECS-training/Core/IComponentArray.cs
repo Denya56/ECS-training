@@ -1,4 +1,4 @@
-﻿namespace ESC_training.Core
+﻿namespace ECS_training.Core
 {
 
     internal interface IComponentArray

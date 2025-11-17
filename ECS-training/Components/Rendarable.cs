@@ -1,8 +1,9 @@
-﻿using System.Numerics;
+﻿using ECS_training.Core;
+using System.Numerics;
 
-namespace ESC_training.Components
+namespace ECS_training.Components
 {
-    public struct Rendarable
+    public struct Rendarable : IComponentData
     {
         public Vector4 Color;
     }

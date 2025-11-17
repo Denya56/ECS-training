@@ -1,4 +1,4 @@
-﻿namespace ESC_training.Core.Managers
+﻿namespace ECS_training.Core.Managers
 {
     internal class EventManager
     {
@@ -25,9 +25,7 @@
                 list.Remove(listener);
                 if (list.Count == 0)
                     _subscribers.Remove(eventType);
-            }
-
-            
+            }            
         }
         public void Notify<TEvent>(TEvent @event)
         {

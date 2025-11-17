@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ESC_training.Exceptions
+namespace ECS_training.Exceptions
 {
     public class EcsException : Exception
     {
@@ -15,6 +15,10 @@ namespace ESC_training.Exceptions
     public class EntityOutOfRangeException : EcsException
     {
         public EntityOutOfRangeException(int id) : base($"Entity {id} is out of range.") { }
+    }
+    public class EntityNotAliveException : EcsException
+    {
+        public EntityNotAliveException(int id) : base($"Entity {id} is not alive.") { }
     }
 
     public class ComponentAlreadyRegisteredException : EcsException

@@ -1,8 +1,9 @@
-﻿using System.Numerics;
+﻿using ECS_training.Core;
+using System.Numerics;
 
-namespace ESC_training.Components
+namespace ECS_training.Components
 {
-    public struct RigidBody2D
+    public struct RigidBody2D : IComponentData
     {
         public Vector2 Velocity;
         public Vector2 Acceleration;

@@ -1,25 +1,28 @@
-﻿using ESC_training.Components;
-using ESC_training.Core;
+﻿using ECS_training.Components;
+using ECS_training.Core;
 using System.Numerics;
-using Transform2D = ESC_training.Components.Transform2D;
-using static ESC_training.Const;
+using static ECS_training.EcsConfig;
+using Transform2D = ECS_training.Components.Transform2D;
 
-namespace ESC_training.Systems
+namespace ECS_training.Systems
 {
-    public class RenderingSystem : System
+    public class RenderingSystem : ECSSystem
     {
+        [RequireComponent] public Transform2D Transform;
+        [RequireComponent] public Rendarable Rendarable;
+
         public readonly List<RenderCommand> Commands = new List<RenderCommand>(MAX_ENTITIES);
         protected override void UpdateInternal(float dt)
         {
             Commands.Clear();
             foreach (Entity entity in entities)
             {
-                ref var transform = ref Coordinator.GetComponent<Transform2D>(entity);
-                ref var color = ref Coordinator.GetComponent<Rendarable>(entity);
+                ref var transform = ref Coordinator.Instance.GetComponent<Transform2D>(entity);
+                ref var color = ref Coordinator.Instance.GetComponent<Rendarable>(entity);
 
-                if (Coordinator.HasComponent<Square>(entity))
+                if (Coordinator.Instance.HasComponent<Square>(entity))
                 {
-                    ref var square = ref Coordinator.GetComponent<Square>(entity);
+                    ref var square = ref Coordinator.Instance.GetComponent<Square>(entity);
                     Commands.Add(new RenderCommand
                     {
                         Position = transform.Position,
@@ -29,9 +32,9 @@ namespace ESC_training.Systems
                         Command = RenderCommand.CommandType.DrawRectangle
                     });
                 }
-                else if (Coordinator.HasComponent<Circle>(entity))
+                else if (Coordinator.Instance.HasComponent<Circle>(entity))
                 {
-                    ref var circle = ref Coordinator.GetComponent<Circle>(entity);
+                    ref var circle = ref Coordinator.Instance.GetComponent<Circle>(entity);
                     Commands.Add(new RenderCommand
                     {
                         Position = transform.Position,

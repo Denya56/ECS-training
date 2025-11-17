@@ -1,18 +1,20 @@
-﻿using ESC_training.Core.Events;
-using ESC_training.Exceptions;
+﻿using ECS_training.Core.Events;
+using ECS_training.Exceptions;
+using ECS_training.Systems;
+using System.Reflection;
 
-namespace ESC_training.Core.Managers
+namespace ECS_training.Core.Managers
 {
     internal class SystemManager
     {
         private readonly EventManager _eventManager;
 
-        private Dictionary<Type, Systems.System> _systems;
+        private Dictionary<Type, Systems.ECSSystem> _systems;
         private Dictionary<Type, Signature> _signatures;
 
         public SystemManager(EventManager eventManager) 
         {
-            _systems = new Dictionary<Type, Systems.System>();
+            _systems = new Dictionary<Type, Systems.ECSSystem>();
             _signatures = new Dictionary<Type, Signature>();
 
             _eventManager = eventManager;
@@ -20,7 +22,7 @@ namespace ESC_training.Core.Managers
             _eventManager.Subscribe<OnEntityDeletedEvent>(HandleEntityDeleted);
             _eventManager.Subscribe<OnEntitySignatureChangedEvent>(HandleEntitySignatureChanged);
         }
-        public T RegisterSystem<T>() where T : Systems.System, new()
+        public T RegisterSystem<T>() where T : Systems.ECSSystem, new()
         {
             Type systemType = typeof(T);
 
@@ -31,7 +33,19 @@ namespace ESC_training.Core.Managers
 
             var system = new T();
             _systems.Add(systemType, system);
+            SetSignature<T>();
             return system;
+        }
+        private void SetSignature<T>()
+        {
+            Type systemType = typeof(T);
+
+            if (!_systems.ContainsKey(systemType))
+            {
+                throw new SystemNotRegisteredException(systemType);
+            }
+
+            _signatures[systemType] = ExtractSignature(systemType);
         }
         public void SetSignature<T>(Signature signature)
         {
@@ -51,7 +65,7 @@ namespace ESC_training.Core.Managers
                 system.entities.Remove(entity);
             }
         }
-        public void EntitySignatureChanged(Entity entity, Signature entitySignature)
+        private void EntitySignatureChanged(Entity entity, Signature entitySignature)
         {
             foreach (var pair in _systems)
             {
@@ -64,13 +78,32 @@ namespace ESC_training.Core.Managers
 
                 if (entitySignature.HasComponents(systemSignature))
                 {
-                    system.entities.Add(entity);
+                    system.AddEntity(entity);
                 }
                 else
                 {
-                    system.entities.Remove(entity);
+                    system.RemoveEntity(entity);
                 }
             }
+        }
+        private Signature ExtractSignature(Type systemType)
+        {
+            Signature signature = new Signature();
+
+            var fields = systemType.GetFields(BindingFlags.Public);
+
+            foreach (var field in fields)
+            {
+                if (field.GetCustomAttribute<RequireComponentAttribute>() != null)
+                {
+                    Type componentType = field.FieldType;
+
+                    var componentId = Coordinator.Instance.GetComponentType(componentType);
+                    signature.AddComponent(componentId);
+                }
+            }
+
+            return signature;
         }
         public void HandleEntityDeleted(OnEntityDeletedEvent e)
         {

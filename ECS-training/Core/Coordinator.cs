@@ -1,8 +1,8 @@
-﻿using ESC_training.Core.Events;
-using ESC_training.Core.Managers;
-using ESC_training.Systems;
+﻿using ECS_training.Core.Events;
+using ECS_training.Core.Managers;
+using ECS_training.Exceptions;
 
-namespace ESC_training.Core
+namespace ECS_training.Core
 {
     public sealed class Coordinator
     {
@@ -19,14 +19,19 @@ namespace ESC_training.Core
             }
         }
 
-        private readonly EventManager _eventManager = new EventManager();
+        private readonly EventManager _eventManager;
 
         private readonly ComponentManager _componentManager;
         private readonly EntityManager _entityManager;
         private readonly SystemManager _systemManager;
         
-        public Coordinator()
+        public Coordinator(int? maxComponents = null, int? maxEntities = null)
         {
+            _eventManager = new EventManager();
+
+            int componentsLimit = maxComponents ?? EcsConfig.MAX_COMPONENTS;
+            int entitiesLimit = maxEntities ?? EcsConfig.MAX_ENTITIES;
+
             _componentManager = new ComponentManager(_eventManager);
             _entityManager = new EntityManager(_eventManager);
             _systemManager = new SystemManager(_eventManager);
@@ -44,35 +49,38 @@ namespace ESC_training.Core
             // notify other managers
             _eventManager.Notify(new OnEntityDeletedEvent(entity));
         }
+
+        public Signature GetEntitySignature(Entity entity)
+        {
+            return _entityManager.GetSignature(entity);
+        }
         #endregion
 
         #region Component methods
-        public void RegisterComponent<T>()
+        public void RegisterComponent<T>() where T : struct, IComponentData
         {
             _componentManager.RegisterComponent<T>();
         }
-        public void AddComponent<T>(Entity entity, T component)
+        public void AddComponent<T>(Entity entity, T component) where T : struct, IComponentData
         {
             _componentManager.AddComponent(entity, component);
 
             var signature = _entityManager.GetSignature(entity);
             signature.AddComponent(_componentManager.GetComponentType<T>());
-            _entityManager.SetSignature(entity, signature);
 
             // notify other managers
             _eventManager.Notify(new OnEntitySignatureChangedEvent(entity, signature));
         }
-        public void RemoveComponent<T>(Entity entity)
+        public void RemoveComponent<T>(Entity entity) where T : struct, IComponentData
         {
             _componentManager.RemoveComponent<T>(entity);
 
             var signature = _entityManager.GetSignature(entity);
             signature.RemoveComponent(_componentManager.GetComponentType<T>());
-            _entityManager.SetSignature(entity, signature);
 
             _eventManager.Notify(new OnEntitySignatureChangedEvent(entity, signature));
         }
-        public ref T GetComponent<T>(Entity entity)
+        public ref T GetComponent<T>(Entity entity) where T : struct, IComponentData
         {
             return ref _componentManager.GetComponent<T>(entity);
         }
@@ -80,17 +88,19 @@ namespace ESC_training.Core
         {
             return _componentManager.GetComponentType<T>();
         }
-        public bool HasComponent<T>(Entity entity)
+        internal ComponentType GetComponentType(Type componentType)
+        {
+            return _componentManager.GetComponentType(componentType);
+        }
+        public bool HasComponent<T>(Entity entity) where T : struct, IComponentData
         {
             return _componentManager.HasComponent<T>(entity);
         }
         #endregion
 
         #region System methods
-        public T RegisterSystem<T>() where T : Systems.System, new()
+        public T RegisterSystem<T>() where T : Systems.ECSSystem, new()
         {
-            var system = new T();
-            system.Coordinator = this;
             return _systemManager.RegisterSystem<T>();
         }
         public void SetSystemSignature<T>(Signature signature)

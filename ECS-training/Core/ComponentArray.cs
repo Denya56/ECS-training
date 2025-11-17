@@ -1,9 +1,9 @@
-﻿using ESC_training.Exceptions;
-using static ESC_training.Const;
+﻿using ECS_training.Exceptions;
+using static ECS_training.EcsConfig;
 
-namespace ESC_training.Core
+namespace ECS_training.Core
 {
-    internal class ComponentArray<T> : IComponentArray
+    internal class ComponentArray<T> : IComponentArray where T : struct
     {
         private T[] _componentArray = new T[MAX_ENTITIES];
         private Dictionary<int, int> _entityToIndex;

@@ -1,14 +1,12 @@
-﻿using ESC_training.Core.Events;
-using ESC_training.Exceptions;
-using System.Diagnostics;
-using static ESC_training.Const;
+﻿using ECS_training.Core.Events;
+using ECS_training.Exceptions;
+using static ECS_training.EcsConfig;
 
-namespace ESC_training.Core.Managers
+namespace ECS_training.Core.Managers
 {
     internal class ComponentManager   
     {
         private readonly EventManager _eventManager;
-
 
         private Dictionary<Type, ComponentType> _componentTypes;
         private Dictionary<Type, IComponentArray> _componentArrays;        
@@ -21,10 +19,9 @@ namespace ESC_training.Core.Managers
             _nextComponentType = 0;
 
             _eventManager = eventManager;
-
             _eventManager.Subscribe<OnEntityDeletedEvent>(HandleEntityDeleted);
         }
-        private ComponentArray<T> GetComponentArray<T>()
+        private ComponentArray<T> GetComponentArray<T>() where T : struct, IComponentData
         {
             Type componentType = typeof(T);
 
@@ -35,7 +32,7 @@ namespace ESC_training.Core.Managers
 
             return (ComponentArray<T>)_componentArrays[componentType];
         }
-        public void RegisterComponent<T>()
+        public void RegisterComponent<T>() where T : struct, IComponentData
         {
             Type componentType = typeof(T);
 
@@ -56,25 +53,30 @@ namespace ESC_training.Core.Managers
         {
             Type componentType = typeof(T);
 
-            if (!_componentTypes.ContainsKey(componentType))
-            {
+            if (!_componentTypes.TryGetValue(componentType, out byte id))
                 throw new ComponentNotRegisteredException(componentType);
-            }
-            return _componentTypes[componentType];
+            return id;
         }
-        public void AddComponent<T>(Entity entity, T component)
+        public ComponentType GetComponentType(Type componentType)
+        {
+            if (!_componentTypes.TryGetValue(componentType, out var id))
+                throw new ComponentNotRegisteredException(componentType);
+
+            return id;
+        }
+        public void AddComponent<T>(Entity entity, T component) where T : struct, IComponentData
         {
             GetComponentArray<T>().InsertData(entity, component);
         }
-        public void RemoveComponent<T>(Entity entity)
+        public void RemoveComponent<T>(Entity entity) where T : struct, IComponentData
         {
-            GetComponentArray<T>().RemoveData(entity);
+            GetComponentArray<T>().RemoveData(entity); 
         }
-        public ref T GetComponent<T>(Entity entity)
+        public ref T GetComponent<T>(Entity entity) where T : struct, IComponentData
         {
             return ref GetComponentArray<T>().GetData(entity);
         }
-        public bool HasComponent<T>(Entity entity)
+        public bool HasComponent<T>(Entity entity) where T : struct, IComponentData
         {
             return GetComponentArray<T>().HasData(entity);
         }
