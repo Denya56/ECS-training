@@ -35,13 +35,6 @@ coordinator.RegisterComponent<Circle>();
 
 ```csharp
 var physicsSystem = coordinator.RegisterSystem<PhysicsSystem>();
-physicsSystem.Coordinator = coordinator;
-
-var physicsSignature = new Signature();
-physicsSignature.AddComponent(coordinator.GetComponentType<Gravity>());
-physicsSignature.AddComponent(coordinator.GetComponentType<RigidBody2D>());
-physicsSignature.AddComponent(coordinator.GetComponentType<Transform2D>());
-coordinator.SetSystemSignature<PhysicsSystem>(physicsSignature);
 ```
 
 ### Create Entities and Add Components
