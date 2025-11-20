@@ -1,8 +1,8 @@
-﻿using ECS_training.Systems;
+﻿using Recs.Systems;
 
 namespace ECS_Test
 {
-    internal class TestSystem : ECS_training.Systems.ECSSystem
+    internal class TestSystem : Recs.Systems.ECSSystem
     {
         [RequireComponent] public TestComponent TestComponent;
         protected override void UpdateInternal(float dt)

@@ -1,12 +1,11 @@
-﻿using ECS_training.Components;
-using ECS_training.Core;
-using ECS_training.Systems;
+﻿using ECS_Demo.Systems;
+using ECS_Demo.Components;
+using Recs.Core;
 using Raylib_cs;
 using System.Diagnostics;
 using System.Numerics;
 using static Config;
-using static ECS_training.EcsConfig;
-using Transform2D = ECS_training.Components.Transform2D;
+using static Recs.EcsConfig;
 
 var coordinator = Coordinator.Instance;
 

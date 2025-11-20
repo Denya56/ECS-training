@@ -1,12 +1,12 @@
-using ECS_training.Core;
-using ECS_training.Exceptions;
-using ECS_training.Systems;
+using Recs.Core;
+using Recs.Exceptions;
+using Recs.Systems;
 
 namespace ECS_Test
 {
     public class CoordinatorTests
     {
-        private const int MaxEntities = ECS_training.EcsConfig.MAX_ENTITIES;
+        private const int MaxEntities = Recs.EcsConfig.MAX_ENTITIES;
         private readonly Coordinator _coordinator;
 
         public CoordinatorTests()
