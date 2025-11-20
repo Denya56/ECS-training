@@ -8,7 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ECS-training\ECS_Training.csproj" />
+	<PackageReference Include="Raylib-cs" Version="7.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ECS_Core\ECS_Core.csproj" />
   </ItemGroup>
 
 </Project>
