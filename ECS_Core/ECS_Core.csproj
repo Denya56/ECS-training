@@ -6,7 +6,15 @@
     <RootNamespace>Recs</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	<PackageId>RECS</PackageId>  
+	<Version>1.0.0</Version>
+    <Authors>denya</Authors>
+    <Description>A C# ECS framework</Description>
 	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>  
+	<PackageTags>ecs;entity-component-system;gamedev;csharp</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<RepositoryUrl>https://github.com/yourusername/ECS_Core</RepositoryUrl>
   </PropertyGroup>
 
 </Project>
