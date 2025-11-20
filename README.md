@@ -6,11 +6,13 @@ A simple Entity-Component-System (ECS) framework in C# for learning game archite
 
 ## Features
 
-* Core ECS components: **Entities, Components, Systems**, and a **Coordinator**.
-* Example systems for **physics** and **rendering**, demonstrated in a 2D demo using **Raylib2D**.
-* Components like `Transform2D`, `RigidBody2D`, `Gravity`, `Renderable`.
-* Handles thousands of entities efficiently.
-* Uses contiguous component arrays for memory-efficient storage and fast updates.
+* Struct-only components implementing ```IComponentData```
+* Packed component arrays with swap-delete behavior for removals
+* Entity lifecycle with explicit alive/dead tracking
+* Automatic system signature generation via reflection + ```[RequireComponent]```
+* 64-bit signature masks, supporting up to 64 component types
+* Unit-tested core components (entities, components, systems, signatures)
+* Includes a small Raylib2D demo
 
 ---
 
@@ -31,10 +33,25 @@ coordinator.RegisterComponent<Square>();
 coordinator.RegisterComponent<Circle>();
 ```
 
+### Define System Requirements
+
+Systems declare which components they need using the RequireComponent attribute:
+```csharp
+[RequireComponent(typeof(Transform2D))]
+[RequireComponent(typeof(RigidBody2D))]
+public class PhysicsSystem : Systems.System
+{
+    public void Update(float dt) { /* ... */ }
+}
+```
+
+The system's signature is generated automatically based on these attributes.
+
 ### Register Systems
 
 ```csharp
 var physicsSystem = coordinator.RegisterSystem<PhysicsSystem>();
+var renderSystem  = coordinator.RegisterSystem<RenderingSystem>();
 ```
 
 ### Create Entities and Add Components
